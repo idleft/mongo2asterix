@@ -8,7 +8,7 @@ import org.junit.Test;
 /**
  * Created by Xikui on 3/30/16.
  */
-public class M2ATest {
+public class MongoDBTest {
 
 
 

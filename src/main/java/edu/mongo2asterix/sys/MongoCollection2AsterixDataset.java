@@ -45,7 +45,7 @@ public class MongoCollection2AsterixDataset {
         }
     }
 
-    public void transfer(MongoDatabase mdb, AsterixDatabase adb, String tableName){
+    public void transferByTable(MongoDatabase mdb, AsterixDatabase adb, String tableName){
         // for record in mdb tablename insert into adb
         MongoCollection<Document> mongoCollection = mdb.getCollection(tableName);
         for (Document doc : mongoCollection.find()){

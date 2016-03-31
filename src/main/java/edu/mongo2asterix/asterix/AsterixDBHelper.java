@@ -16,21 +16,21 @@ import java.util.List;
  */
 public class AsterixDBHelper {
 
-    public static AsterixDBHelper instance;
-    private static M2AConfig mc = M2AConfig.getInstance();
+//    public static AsterixDBHelper instance;
     public static String asterixHost;
     public static Integer asterixPort;
     private static String asterixURL;
 
-    public static AsterixDBHelper getInstance(){
-        if(instance ==null)
-            instance = new AsterixDBHelper();
-        return instance;
-    }
+    // Might not be necessary to use singleton
+//    public static AsterixDBHelper getInstance(){
+//        if(instance ==null)
+//            instance = new AsterixDBHelper();
+//        return instance;
+//    }
 
-    public AsterixDBHelper(){
-        asterixHost = mc.asterix_host;
-        asterixPort = mc.asterix_port;
+    public static void InitAsterixDBHelper(String asterix_host, Integer asterix_port){
+        asterixHost = asterix_host;
+        asterixPort = asterix_port;
         asterixURL = "http://"+asterixHost+":"+String.valueOf(asterixPort);
     }
 
@@ -41,7 +41,6 @@ public class AsterixDBHelper {
             requestURL = new URL(asterixURL);
             conn = (HttpURLConnection) requestURL.openConnection();
             conn.setRequestMethod("GET");
-
             conn.setRequestProperty(requestType,aql);
             return conn.getResponseCode();
         } catch (MalformedURLException e) {
@@ -69,6 +68,10 @@ public class AsterixDBHelper {
         }
         String requestAQL = String.format(aqlTemplate,dvName,dtName,String.join(",",dataTypeList));
         putRequest("ddl",requestAQL);
+    }
+
+    public static String castObjectToAsterixString(Object obj){
+        return "";
     }
 
     public static void createDataSet(String dvName, String dsName, String dtName, String pkeyName){
