@@ -11,6 +11,7 @@ public class M2AConfig {
     public Integer mongo_port;
     public String asterix_host;
     public Integer asterix_port;
+    public String keyName;
 
     public static M2AConfig getInstance(){
         if(instance == null)
@@ -24,5 +25,7 @@ public class M2AConfig {
 
         asterix_host = "localhost";
         asterix_port = 190002;
+
+        keyName = "dbpass.key";
     }
 }
