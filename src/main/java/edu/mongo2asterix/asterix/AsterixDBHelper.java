@@ -38,6 +38,7 @@ public class AsterixDBHelper {
 
     public int putRequest(String requestType, String aql) {
         URL requestURL = null;
+        LOGGER.log(Level.INFO, "Requested AQL: {0}", new Object[]{aql});
         HttpURLConnection conn = null;
         try {
             String requestStr = asterixURL + "/" +requestType+"?"+requestType+"=" + URLEncoder.encode(aql);
@@ -65,14 +66,16 @@ public class AsterixDBHelper {
         return putRequest("ddl", requestAQL) == 200;
     }
 
+    // To simplify the problem, all non alphanumeric characters are ignored
     public boolean createDataType(String dvName, String dtName, HashMap<String, String> dataTypes) {
         String aqlTemplate = "use dataverse %s; create type %s as open{ %s}";
+        String fdtName = dtName.replaceAll("[^A-Za-z0-9]","");
         List<String> dataTypeList = new ArrayList();
         for (String attrName : dataTypes.keySet()) {
             String attrType = dataTypes.get(attrName);
-            dataTypeList.add(attrName + ":" + attrType);
+            dataTypeList.add(attrName.replaceAll("[^A-Za-z0-9]","") + ":" + attrType);
         }
-        String requestAQL = String.format(aqlTemplate, dvName, dtName, String.join(",", dataTypeList));
+        String requestAQL = String.format(aqlTemplate, dvName, fdtName, String.join(",", dataTypeList));
         return putRequest("ddl", requestAQL) == 200;
     }
 

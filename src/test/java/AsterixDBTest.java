@@ -19,15 +19,15 @@ public class AsterixDBTest {
         mdm.conn(mc.mongo_host, mc.mongo_port,mc.mgUser, mc.mgPass,mc.mgName);
     }
 
-    @Test
+    @Ignore
     public void createDataverse(){
         assert (ad.createDataverse(mc.mgName) == true);
     }
 
-    @Ignore
+    @Test
     public void createDatatype(){
         MongoCollection mgc = mdm.getCollection("wifi_observations");
         Document initDoc = (Document) mgc.find().limit(1).first();
-        ad.createDataTypeFromMongoDocument("wifi_observatons_type",initDoc);
+        assert (ad.createDataTypeFromMongoDocument("wifi_observatons_type",initDoc));
     }
 }
