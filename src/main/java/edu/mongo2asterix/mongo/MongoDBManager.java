@@ -3,6 +3,7 @@ package edu.mongo2asterix.mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import java.util.Arrays;
@@ -18,6 +19,8 @@ public class MongoDBManager {
 
     public static MongoDBManager instance;
     public MongoClient mongoClient;
+    private String dbName;
+    public  MongoDatabase db;
 
     public static MongoDBManager getInstance(){
         if(instance == null)
@@ -33,10 +36,12 @@ public class MongoDBManager {
         MongoCredential credential = MongoCredential.createCredential(uname,dbName,pass.toCharArray());
         LOGGER.log(Level.INFO,"Connect as |"+uname+"|"+pass+"|");
         mongoClient = new MongoClient(new ServerAddress(host,port), Arrays.asList(credential));
+        this.dbName = dbName;
+        this.db = mongoClient.getDatabase(dbName);
     }
 
-    public MongoDatabase getDB(String dbName){
-        return mongoClient.getDatabase(dbName);
+    public MongoCollection getCollection(String collectionName){
+        return this.db.getCollection(collectionName);
     }
 
 }

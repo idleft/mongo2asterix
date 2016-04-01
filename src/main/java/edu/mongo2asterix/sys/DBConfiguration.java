@@ -8,17 +8,19 @@ import java.io.*;
 public class DBConfiguration {
 
 
-    private M2AConfig m2AConfig = M2AConfig.getInstance();
-    public String dbName;
+//    private M2AConfig m2AConfig = M2AConfig.getInstance();
+    public String dbUser;
     public String dbPass;
+    public String dbName;
 
-    public DBConfiguration(){
+    public DBConfiguration(String keyName){
 
-        InputStream keyIS = this.getClass().getClassLoader().getResourceAsStream(m2AConfig.keyName);
+        InputStream keyIS = this.getClass().getClassLoader().getResourceAsStream(keyName);
         BufferedReader keyBR = new BufferedReader(new InputStreamReader(keyIS));
         try {
-            dbName = keyBR.readLine().trim();
+            dbUser = keyBR.readLine().trim();
             dbPass = keyBR.readLine().trim();
+            dbName = keyBR.readLine().trim();
         } catch (IOException e) {
             e.printStackTrace();
         }

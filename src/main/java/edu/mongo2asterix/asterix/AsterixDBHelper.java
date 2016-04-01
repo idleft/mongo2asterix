@@ -1,15 +1,16 @@
 package edu.mongo2asterix.asterix;
 
 import edu.mongo2asterix.sys.M2AConfig;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Xikui on 3/30/16.
@@ -17,6 +18,7 @@ import java.util.List;
 public class AsterixDBHelper {
 
     //    public static AsterixDBHelper instance;
+    Logger LOGGER = Logger.getLogger(AsterixDBHelper.class.getName());
     public String asterixHost;
     public Integer asterixPort;
     private String asterixURL;
@@ -28,7 +30,7 @@ public class AsterixDBHelper {
 //        return instance;
 //    }
 
-    public void AsterixDBHelper(String asterix_host, Integer asterix_port) {
+    public AsterixDBHelper(String asterix_host, Integer asterix_port) {
         asterixHost = asterix_host;
         asterixPort = asterix_port;
         asterixURL = "http://" + asterixHost + ":" + String.valueOf(asterixPort);
@@ -38,10 +40,14 @@ public class AsterixDBHelper {
         URL requestURL = null;
         HttpURLConnection conn = null;
         try {
-            requestURL = new URL(asterixURL);
+            String requestStr = asterixURL + "/" +requestType+"?"+requestType+"=" + URLEncoder.encode(aql);
+            requestURL = new URL(requestStr);
+            System.out.println("Request URL: "+requestStr);
             conn = (HttpURLConnection) requestURL.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty(requestType, aql);
+//            conn.setRequestProperty(requestType, aql);
+            conn.connect();
+            LOGGER.log(Level.INFO,"Send request to asterix with response {0}",new Object[]{conn.getResponseMessage()});
             return conn.getResponseCode();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -54,12 +60,12 @@ public class AsterixDBHelper {
     }
 
 
-    public void createDataverse(String dvName) {
+    public boolean createDataverse(String dvName) {
         String requestAQL = String.format("drop dataverse %s if exists; create dataverse %s", dvName, dvName);
-        putRequest("ddl", requestAQL);
+        return putRequest("ddl", requestAQL) == 200;
     }
 
-    public void createDataType(String dvName, String dtName, HashMap<String, String> dataTypes) {
+    public boolean createDataType(String dvName, String dtName, HashMap<String, String> dataTypes) {
         String aqlTemplate = "use dataverse %s; create type %s as open{ %s}";
         List<String> dataTypeList = new ArrayList();
         for (String attrName : dataTypes.keySet()) {
@@ -67,7 +73,7 @@ public class AsterixDBHelper {
             dataTypeList.add(attrName + ":" + attrType);
         }
         String requestAQL = String.format(aqlTemplate, dvName, dtName, String.join(",", dataTypeList));
-        putRequest("ddl", requestAQL);
+        return putRequest("ddl", requestAQL) == 200;
     }
 
     public String castObjectToAsterixString(Object obj) {
@@ -80,4 +86,18 @@ public class AsterixDBHelper {
         putRequest("ddl", requestAQL);
     }
 
+    public String castObjectToAsterixType(Object obj) {
+        String typeStr = null;
+        if (obj instanceof String) {
+            typeStr = "string";
+        } else if (obj instanceof Date) {
+            typeStr = "datetime";
+        } else if (obj instanceof Integer) {
+            typeStr = "int32";
+        } else if (obj instanceof ObjectId) {
+            typeStr = "int32";
+        } else
+            typeStr = "null";
+        return typeStr;
+    }
 }

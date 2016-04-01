@@ -1,8 +1,7 @@
-import com.mongodb.Mongo;
 import com.mongodb.client.MongoDatabase;
 import edu.mongo2asterix.mongo.MongoDBManager;
-import edu.mongo2asterix.sys.DBConfiguration;
-import edu.mongo2asterix.sys.MongoCollection2AsterixDataset;
+import edu.mongo2asterix.sys.M2AConfig;
+import edu.mongo2asterix.sys.Mongo2AsterixDataset;
 import org.junit.Test;
 
 /**
@@ -10,15 +9,14 @@ import org.junit.Test;
  */
 public class MongoDBTest {
 
-
+    M2AConfig mc = M2AConfig.getInstance();
 
     @Test
     public void mongoObjectExtractionTest(){
-        MongoCollection2AsterixDataset mcad = MongoCollection2AsterixDataset.getInstance();
-        DBConfiguration dbc = new DBConfiguration();
+        Mongo2AsterixDataset mcad = Mongo2AsterixDataset.getInstance();
         MongoDBManager mdm = MongoDBManager.getInstance();
-        mdm.conn("tippersweb.ics.uci.edu",27017,dbc.dbName,dbc.dbPass,"tippers");
-        MongoDatabase mdb = mdm.getDB("tippers");
+        mdm.conn("tippersweb.ics.uci.edu",27017,mc.mgUser,mc.mgPass,mc.mgName);
+        MongoDatabase mdb = mdm.db;
         mcad.testMongoType(mdb,"wifi_observations");
     }
 }

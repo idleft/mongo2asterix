@@ -1,4 +1,5 @@
 import edu.mongo2asterix.sys.DBConfiguration;
+import edu.mongo2asterix.sys.M2AConfig;
 import org.junit.Test;
 
 /**
@@ -8,9 +9,10 @@ public class DBConfigurationTest {
 
     @Test
     public void ConfigurationReaderTest(){
-        DBConfiguration dbc = new DBConfiguration();
-        System.out.println("Username : "+dbc.dbName+" Pass: "+dbc.dbPass);
-        assert(dbc.dbPass!=""&&dbc.dbName!="");
+        M2AConfig mc = M2AConfig.getInstance();
+//        DBConfiguration dbc = new DBConfiguration();
+        System.out.println("Username : "+mc.mgUser+" Pass: "+mc.mgPass);
+        assert(mc.mgName!=""&&mc.mgPass!="");
     }
 
 }

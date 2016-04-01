@@ -11,7 +11,13 @@ public class M2AConfig {
     public Integer mongo_port;
     public String asterix_host;
     public Integer asterix_port;
-    public String keyName;
+
+    public String mgUser;
+    public String mgPass;
+    public String mgName;
+
+    private  String keyName;
+    private DBConfiguration dbc;
 
     public static M2AConfig getInstance(){
         if(instance == null)
@@ -20,12 +26,17 @@ public class M2AConfig {
     }
 
     public M2AConfig(){
-        mongo_host = "localhost";
+        mongo_host = "tippersweb.ics.uci.edu";
         mongo_port = 27017;
 
         asterix_host = "localhost";
-        asterix_port = 190002;
+        asterix_port = 19002;
 
         keyName = "dbpass.key";
+
+        dbc = new DBConfiguration(keyName);
+        mgUser = dbc.dbUser;
+        mgPass = dbc.dbPass;
+        mgName = dbc.dbName;
     }
 }
